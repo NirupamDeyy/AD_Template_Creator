@@ -1,57 +1,78 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class Template : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
     [Tooltip("Reference to the Template Background Image")]
-    private Image _templateBackgroundImage;
+    public Image _templateBackgroundImage;
 
     [HideInInspector]
+    [SerializeField]
     public Color _colorTemplateBackgroundImage;
 
-    [SerializeField]
     [Tooltip("Reference to the Template Background Image")]
-    private Button _buttonCTA;
+    public Button _buttonCTA;
+
+    //[HideInInspector]
+    public Color _colorButtonCTA = Color.cyan;
+
+    [Tooltip("Reference to the Template Background Image")]
+    public TMP_Text _buttonTextRef;
 
     [HideInInspector]
-    public Color _colorButtonCTA;
-
-    [SerializeField]
-    [Tooltip("Reference to the Template Background Image")]
-    private TMP_Text _buttonText;
+    public Color _colorButtonText = Color.white;
 
     [HideInInspector]
-    public Color _colorButtonText;
+    public string _buttonText;
 
     [Header("App References")]
-    [SerializeField]
     [Tooltip("Reference to the App Icon Image")]
-    private RawImage _appIcon;
+    public RawImage _appIcon;
 
-    [SerializeField]
-    [Tooltip("App Title")]
-    [TextArea()]
-    private string _appTitleText;
+    [Tooltip("App Headline")]
+    public TMP_Text _appHeadlineText;
 
     [HideInInspector]
-    public Color _colorAppTitleText;
+    public string _appHeadlineString;
 
-    [SerializeField]
-    [Range(0,5)]
-    [Tooltip("PlayStore Ratings")]
-    private float _rating;
+    [HideInInspector]
+    public Color _colorAppHeadline;
+
+    [Tooltip("App Info")]
+    public TMP_Text _appInfoText;
+
+    [HideInInspector]
+    public string _appInfoString;
+
+    [HideInInspector]
+    public Color _colorAppInfo;
+
+    [Tooltip("PlayStore Ratings Reference Image")]
+    public Image _imageStarsRating;
+
+    [Range(0, 5)]
+    public float _ratingFillAmount;
+
+    public Color _ratingStarsColor;
+
+    [Tooltip("Price of the App")]
+    public TMP_Text _priceText;
+
+    public float _priceValue;
+
+    /*[SerializeField]
+    
 
     [SerializeField]
     [Range(0, 1000)]
     [Tooltip("Price of the App")]
-    private float _price;
+    private float _price;*/
 
-    [SerializeField]
-    [Tooltip("App Information")][TextArea()]
-    private string _appInfoText;
+    public SaveLoadTemplates _saveLoadTemplates;
 
 
     void Start()
@@ -59,9 +80,44 @@ public class Template : MonoBehaviour
         
     }
 
+    public void Initialize()
+    {
+        _templateBackgroundImage.color = _colorTemplateBackgroundImage;
+        _buttonCTA.image.color = _colorButtonCTA;
+        _buttonTextRef.color = _colorButtonText;
+        _buttonTextRef.text = _buttonText;
+        _appHeadlineText.text = _appHeadlineString;
+        _appHeadlineText.color = _colorAppHeadline;
+        _appInfoText.text = _appInfoString;
+        _appInfoText.color = _colorAppInfo;
+        _imageStarsRating.fillAmount = _ratingFillAmount / 5f;
+        _imageStarsRating.color = _ratingStarsColor;
+        _priceText.text = _priceValue.ToString();
+
+        if( _priceValue <= 0)
+        {
+            _priceText.text = "FREE";
+            _priceText.color = Color.green;
+        }
+        else
+        {
+            _priceText.color = Color.black;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    internal void SaveData()
+    {
+        _saveLoadTemplates.Save();
+    }
+
+    internal void LoadData()
+    {
+        _saveLoadTemplates.Load(SaveLoadTemplates.LoadFileBy.TextFile);
     }
 }
