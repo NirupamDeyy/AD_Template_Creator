@@ -1,1 +1,1 @@
-{"_colorTempBack":"4AFF00FF"}
+{"_colorTempBack":"FF001FFF","_colorButtonCTA":"000000FF","_colorAdHeadline":"FFFFFFFF","_colorTextCTA":"FFFFFFFF","_colorTextBody":"FFFFFFFF","_colorRatingStars":"FFEF00FF","_textCTA":"download","_textADHeadline":"New headline heck","_textBody":"DOWNLOAD TGHIS NOW","_valueRating":3.0399999618530275,"_valuePrice":463.0,"_templatePosition":{"x":-41.0,"y":356.0},"_templateWidth":800.0,"_templateHeight":452.0,"_rotationZvalue":0.0}

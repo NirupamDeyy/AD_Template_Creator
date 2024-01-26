@@ -6,22 +6,28 @@ using System;
 public class Template : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField]
     [Tooltip("Reference to the Template Background Image")]
-    public Image _templateBackgroundImage;
+    [SerializeField]
+    private Image _templateBackgroundImage;
 
     [HideInInspector]
-    [SerializeField]
     public Color _colorTemplateBackgroundImage;
+    [HideInInspector]
+    public float _templateWidth = 800, _templateHeight =470, _rotationZaxis = 0;
+
+    [HideInInspector]
+    public Vector2 _templatePosition = Vector2.zero;
 
     [Tooltip("Reference to the Template Background Image")]
-    public Button _buttonCTA;
+    [SerializeField] 
+    private Button _buttonCTA;
 
-    //[HideInInspector]
+    [HideInInspector]
     public Color _colorButtonCTA = Color.cyan;
 
     [Tooltip("Reference to the Template Background Image")]
-    public TMP_Text _buttonTextRef;
+    [SerializeField]
+    private TMP_Text _buttonTextRef;
 
     [HideInInspector]
     public Color _colorButtonText = Color.white;
@@ -33,66 +39,62 @@ public class Template : MonoBehaviour
     [Tooltip("Reference to the App Icon Image")]
     public RawImage _appIcon;
 
+    [SerializeField]
     [Tooltip("App Headline")]
-    public TMP_Text _appHeadlineText;
+    private TMP_Text _appHeadlineText;
 
     [HideInInspector]
     public string _appHeadlineString;
 
     [HideInInspector]
-    public Color _colorAppHeadline;
+    public Color _colorAdHeadline;
 
-    [Tooltip("App Info")]
-    public TMP_Text _appInfoText;
+    [Tooltip("Text Body")]
+    [SerializeField]
+    private TMP_Text _appInfoText;
 
     [HideInInspector]
     public string _appInfoString;
 
     [HideInInspector]
-    public Color _colorAppInfo;
+    public Color _colorTextBody;
 
-    [Tooltip("PlayStore Ratings Reference Image")]
-    public Image _imageStarsRating;
+    [Tooltip("PlayStore Ratings Image")]
+    [SerializeField] 
+    private Image _imageStarsRating;
 
-    [Range(0, 5)]
+    [HideInInspector]
     public float _ratingFillAmount;
-
+    [HideInInspector]
     public Color _ratingStarsColor;
 
     [Tooltip("Price of the App")]
-    public TMP_Text _priceText;
+    [SerializeField]private TMP_Text _priceText;
 
+    [HideInInspector]
     public float _priceValue;
 
-    /*[SerializeField]
-    
-
-    [SerializeField]
-    [Range(0, 1000)]
-    [Tooltip("Price of the App")]
-    private float _price;*/
-
+    [Tooltip("Automatically gets attached when SAVE button is clicked")]
     public SaveLoadTemplates _saveLoadTemplates;
 
 
-    void Start()
-    {
-        
-    }
 
-    public void Initialize()
+    public void InitializeTemplate()
     {
         _templateBackgroundImage.color = _colorTemplateBackgroundImage;
+        _templateBackgroundImage.rectTransform.sizeDelta = new Vector2(_templateWidth, _templateHeight);
+        _templateBackgroundImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, _rotationZaxis);
+        _templateBackgroundImage.transform.localPosition = _templatePosition;
         _buttonCTA.image.color = _colorButtonCTA;
         _buttonTextRef.color = _colorButtonText;
         _buttonTextRef.text = _buttonText;
         _appHeadlineText.text = _appHeadlineString;
-        _appHeadlineText.color = _colorAppHeadline;
+        _appHeadlineText.color = _colorAdHeadline;
         _appInfoText.text = _appInfoString;
-        _appInfoText.color = _colorAppInfo;
+        _appInfoText.color = _colorTextBody;
         _imageStarsRating.fillAmount = _ratingFillAmount / 5f;
         _imageStarsRating.color = _ratingStarsColor;
-        _priceText.text = _priceValue.ToString();
+        _priceText.text = "$ " + _priceValue.ToString();
 
         if( _priceValue <= 0)
         {
@@ -105,19 +107,17 @@ public class Template : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     internal void SaveData()
     {
+        GameObject obj = GameObject.FindGameObjectWithTag("SaveLoadTempTag");
+        if (obj != null)
+        {
+            _saveLoadTemplates = obj.GetComponent<SaveLoadTemplates>();
+        }
+        else
+        {
+            Debug.LogWarning("Save Load Gameobject not found");
+        }
         _saveLoadTemplates.Save();
-    }
-
-    internal void LoadData()
-    {
-        _saveLoadTemplates.Load(SaveLoadTemplates.LoadFileBy.TextFile);
     }
 }

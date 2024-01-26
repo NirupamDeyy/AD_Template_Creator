@@ -1,12 +1,9 @@
 using UnityEngine;
 using UnityEditor;
-using static UnityEngine.GraphicsBuffer;
 
-[CustomEditor(typeof(Template))]
-public class TemplateEditorWindow : EditorWindow
+public class TemplateLoaderWindow : EditorWindow
 {
     static EditorWindow gameview;
-    private string prefabPath = "TemplatePrefab"; // Path to the prefab within the Resources folder
     private float _padding = 10f;
     private TextAsset _textAsset;
     private enum FieldType { Number, TextFile }
@@ -16,9 +13,8 @@ public class TemplateEditorWindow : EditorWindow
 
     private int selectedOptionIndex = 0;
     SaveLoadTemplates _saveLoadTemplates;
-    [MenuItem("GG_Assignment/CreateTemplate")]
-
-    void OnEnable()
+  
+  /*  void OnEnable()
     {
         if (gameview == null)
         {
@@ -30,18 +26,18 @@ public class TemplateEditorWindow : EditorWindow
     void OnDisable()
     {
         gameview = null;
-    }
-    private void Repaint2()
+    }*/
+ /*   private void Repaint2()
     {
         if (gameview != null)
         {
-            gameview.Repaint();
+           // gameview.Repaint();
         }
-
-    }
+    }*/
+    [MenuItem("GG_Assignment/CreateTemplate")]
     public static void ShowWindow()
     {
-        GetWindow<TemplateEditorWindow>("Template");
+        GetWindow<TemplateLoaderWindow>("Template");
         GameObject obj = GameObject.FindGameObjectWithTag("SaveLoadTempTag");
         if(obj == null )
         {
@@ -51,7 +47,6 @@ public class TemplateEditorWindow : EditorWindow
             {
                 // Instantiate the loaded prefab
                 Instantiate(prefab, Vector3.zero, Quaternion.identity);
-               
             }
             else
             {
@@ -76,16 +71,6 @@ public class TemplateEditorWindow : EditorWindow
         _saveLoadTemplates = FindObjectOfType<SaveLoadTemplates>();
         if (GUILayout.Button("INSTANTIATE"))
         {
-            
-           /* if (saveLoadTemplates != null)
-            {
-                saveLoadTemplates.Initialize();
-            }
-            else
-            {
-                Debug.LogError("SaveLoadTemplates component not found in the scene.");
-            }*/
-
             GameObject prefab = Resources.Load<GameObject>("TemplatePrefab");
 
             if (prefab != null)
@@ -117,13 +102,11 @@ public class TemplateEditorWindow : EditorWindow
                     _fileNumber--;
                     _saveLoadTemplates.loadInt = _fileNumber;
                     _saveLoadTemplates.Load(SaveLoadTemplates.LoadFileBy.Number);
-                    Repaint2();
                 }
                 if (GUILayout.Button("LOAD"))
                 {
                     _saveLoadTemplates.loadInt = _fileNumber;
                     _saveLoadTemplates.Load(SaveLoadTemplates.LoadFileBy.Number);
-                    Repaint2();
 
                 }
                 if (GUILayout.Button("LOAD NEXT"))
@@ -131,7 +114,6 @@ public class TemplateEditorWindow : EditorWindow
                     _fileNumber++;
                     _saveLoadTemplates.loadInt = _fileNumber;
                     _saveLoadTemplates.Load(SaveLoadTemplates.LoadFileBy.Number);
-                    Repaint2();
                 }
                 GUILayout.EndHorizontal();
                 break;
@@ -142,7 +124,6 @@ public class TemplateEditorWindow : EditorWindow
                 {
                     _saveLoadTemplates.jsonFile = _textAsset;
                     _saveLoadTemplates.Load(SaveLoadTemplates.LoadFileBy.TextFile);
-                    Repaint2();
                 }
                 break;
             default:

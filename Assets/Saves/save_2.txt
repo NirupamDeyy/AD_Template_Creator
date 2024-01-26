@@ -1,1 +1,1 @@
-{"_colorTempBack":"D40000FF"}
+{"_colorTempBack":"FF7B00FF","_colorButtonCTA":"000000FF","_colorAdHeadline":"FFFFFFFF","_colorTextCTA":"FFFFFFFF","_colorTextBody":"FFFFFFFF","_colorRatingStars":"000000FF","_textCTA":"Buy now","_textADHeadline":"New headline heck","_textBody":"gggggggggggggggggggggggggggggggggggggggggrsrgssrsrsssdxfsxerw sefddhyttyuyuitddh","_valueRating":3.2799999713897707,"_valuePrice":463.0,"_templateWidth":1078.0,"_templateHeight":687.0,"_rotationZvalue":-90.0}

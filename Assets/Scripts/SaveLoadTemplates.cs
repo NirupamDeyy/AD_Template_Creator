@@ -1,14 +1,14 @@
-
-using System.Numerics;
+using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SaveLoadTemplates : MonoBehaviour
 {
     public Template template;
 
+    [HideInInspector]
     public TextAsset jsonFile;
 
+    [HideInInspector]
     public int loadInt = 2;
 
     public enum LoadFileBy
@@ -19,12 +19,12 @@ public class SaveLoadTemplates : MonoBehaviour
 
     public void Awake()
     {
-        Initialize();
+        InitializeSL();
     }
 
-    public void Initialize()
+    public void InitializeSL() // called through SAVE or LOAD
     {
-        Debug.Log("initializing");
+        //Debug.Log("initializing");
         GameObject temp = GameObject.FindGameObjectWithTag("TemplateTag");
         {
             if (temp != null)
@@ -50,70 +50,66 @@ public class SaveLoadTemplates : MonoBehaviour
     private string ColorToHexConverter(Color color)
     {
         string hexColor = ColorUtility.ToHtmlStringRGBA(color);
-        Debug.Log("Hexadecimal representation: " + hexColor);
+        //Debug.Log("Hexadecimal representation: " + hexColor);
         return hexColor;
     }
 
     private Color HexToColorConverter(string hexColor)
     {
         Color color;
-        /*if (ColorUtility.TryParseHtmlString(hexColor, out color))
-        {
-            return color;
-        }
-        else
-        {
-            return Color.grey;
-        }*/
-        Debug.Log(hexColor);
         ColorUtility.TryParseHtmlString("#" + hexColor, out color);
         return color;
     }
 
-
-
-
     public void Save()
     {
-        string _colorTempBack = ColorToHexConverter(template._colorTemplateBackgroundImage);
-        /*float roughness = template.shapeSettings.noiseSettings.roughness;
-        float strength = template.shapeSettings.noiseSettings.strength;
-        float radius = template.shapeSettings.planetRadius;
-        bool move = template.move;
-        float speed = template.speed;
-        string itemName = assignDeleteButton.itemName;
-        float sphereRed = template.red;
-        float sphereGreen = template.green;
-        float sphereBlue = template.blue;
-        float planeRed = planeColour.red;
-        float planeGreen = planeColour.green;
-        float planeBlue = planeColour.blue;*/
+        InitializeSL();
+        string colorTempBack = ColorToHexConverter(template._colorTemplateBackgroundImage);
+        string colorButtonCTA = ColorToHexConverter(template._colorButtonCTA);
+        string colorTextCTA = ColorToHexConverter(template._colorButtonText);
+        string colorAdHeadline = ColorToHexConverter(template._colorAdHeadline);
+        string colorTextBody = ColorToHexConverter(template._colorTextBody);
+        string colorRatingStars = ColorToHexConverter(template._ratingStarsColor);
+
+        string textCTA = template._buttonText;
+        string textADHeadline = template._appHeadlineString;
+        string textBody = template._appInfoString;
+        float valueRating = template._ratingFillAmount;
+        float valuePrice = template._priceValue;
+
+        Vector2 templatePosition = template._templatePosition;
+        float templateWidth = template._templateWidth;
+        float templateHeight = template._templateHeight;
+        float rotationZvalue = template._rotationZaxis;
 
         SaveObject saveObject = new()
         {
-            _colorTempBack = _colorTempBack,
-            /*roughness = roughness,
-            strength = strength,
-            radius = radius,
-            move = move,
-            speed = speed,
-            itemName = itemName,
-            sphereRed = sphereRed,
-            sphereGreen = sphereGreen,
-            sphereBlue = sphereBlue,
-            planeRed = planeRed,
-            planeGreen = planeGreen,
-            planeBlue = planeBlue*/
+            _colorTempBack = colorTempBack,
+            _colorButtonCTA = colorButtonCTA,
+            _colorTextCTA = colorTextCTA,
+            _colorAdHeadline = colorAdHeadline,
+            _colorTextBody = colorTextBody,
+            _colorRatingStars = colorRatingStars,
+
+            _textADHeadline = textADHeadline,
+            _textBody = textBody,
+            _textCTA = textCTA,
+            _valuePrice = valuePrice,
+            _valueRating = valueRating,
+
+            _templatePosition = templatePosition,
+            _templateWidth = templateWidth,
+            _templateHeight = templateHeight,
+            _rotationZvalue = rotationZvalue,
         };
 
         string json = JsonUtility.ToJson(saveObject);
         //SaveSystem.itemName = itemName;
         SaveSystem.Save(json);
     }
-
     public void Load(LoadFileBy type)
     {
-        
+        InitializeSL();
         string saveString = "";
         switch (type)
         { 
@@ -135,46 +131,62 @@ public class SaveLoadTemplates : MonoBehaviour
                 break;
         }
        
-
         if (saveString != null)
         {
-            SaveObject saveObject = JsonUtility.FromJson<SaveObject>(saveString);
+            try
+            {
+                SaveObject saveObject = JsonUtility.FromJson<SaveObject>(saveString);
+                template._colorTemplateBackgroundImage = HexToColorConverter(saveObject._colorTempBack);
+                template._colorButtonCTA = HexToColorConverter(saveObject._colorButtonCTA);
+                template._colorButtonText = HexToColorConverter(saveObject._colorTextCTA);
+                template._colorAdHeadline = HexToColorConverter(saveObject._colorAdHeadline);
+                template._colorTextBody = HexToColorConverter(saveObject._colorTextBody);
+                template._ratingStarsColor = HexToColorConverter(saveObject._colorRatingStars);
 
-            template._colorTemplateBackgroundImage = HexToColorConverter(saveObject._colorTempBack);
-            /*template.shapeSettings.noiseSettings.roughness = saveObject.roughness;
-            template.shapeSettings.noiseSettings.strength = saveObject.strength;
-            template.shapeSettings.planetRadius = saveObject.radius;
-            template.move = saveObject.move;
-            template.speed = saveObject.speed;
-            template.red = saveObject.sphereRed;
-            template.green = saveObject.sphereGreen;
-            template.blue = saveObject.sphereBlue;
-            planeColour.red = saveObject.planeRed;
-            planeColour.green = saveObject.planeGreen;
-            planeColour.blue = saveObject.planeBlue;*/
+                template._buttonText = saveObject._textCTA;
+                template._appHeadlineString = saveObject._textADHeadline;
+                template._appInfoString = saveObject._textBody;
+                template._ratingFillAmount = saveObject._valueRating;
+                template._priceValue = saveObject._valuePrice;
 
-            template.Initialize();
+                template._templatePosition = saveObject._templatePosition;
+                template._templateWidth = saveObject._templateWidth;
+                template._templateHeight = saveObject._templateHeight;
+                template._rotationZaxis = saveObject._rotationZvalue;
+
+                template.InitializeTemplate();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("An error occurred while loading data: " + ex.Message);
+            }
         }
     }
 
 
     private class SaveObject
     {
+        //colors
         public string _colorTempBack;
-/*
-        public int resolution;
-        public float roughness;
-        public float strength;
-        public float radius;
-        public bool move;
-        public float speed;
-        public string itemName;
-        public float sphereRed;
-        public float sphereGreen;
-        public float sphereBlue;
-        public float planeRed;
-        public float planeGreen;
-        public float planeBlue;*/
+        public string _colorButtonCTA;
+        public string _colorAdHeadline;
+        public string _colorTextCTA;
+        public string _colorTextBody;
+        public string _colorRatingStars;
+
+        //Values & texts
+        public string _textCTA;
+        public string _textADHeadline;
+        public string _textBody;
+        public float _valueRating;
+        public float _valuePrice;
+
+        //Transform adjustments
+        public Vector2 _templatePosition;
+        public float _templateWidth;
+        public float _templateHeight;
+        public float _rotationZvalue;
+        
     }
 
 }

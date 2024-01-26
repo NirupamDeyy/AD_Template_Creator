@@ -1,14 +1,13 @@
 using UnityEngine;
 using UnityEditor;
-using System.Numerics;
 
 [CustomEditor(typeof(Template))]
 public class TemplateEditor : Editor
 {
-
     static EditorWindow gameview;
     Template template;
     bool showReferences = false;
+    string refString = "SHOW REFERENCES";
     void OnEnable()
     {
         template = (Template)target;
@@ -34,78 +33,72 @@ public class TemplateEditor : Editor
     }
     public override void OnInspectorGUI()
     {
-        
-
-
-        using (var check = new EditorGUI.ChangeCheckScope())
+        if (showReferences)
         {
-            if(showReferences)
             base.OnInspectorGUI();
-            if (GUILayout.Button("References"))
-            {
-                if (!showReferences)
-                {
-                    showReferences = true;
-                }
-                else
-                {
-                    showReferences = false;
-                }
-
-            }
-            if (check.changed)
-            {
-               template.Initialize();
-            }
+            refString = "HIDE REFERENCES";
         }
+        else
+        {
+            refString = "SHOW REFERENCES";
+        }
+            
+        if (GUILayout.Button(refString))
+        {
+            showReferences = !showReferences;
+        }
+
+
+        // Section 1: COLORS
+        EditorGUILayout.LabelField("COLORS", EditorStyles.boldLabel);
+        DrawUILine();
 
         template._colorTemplateBackgroundImage = EditorGUILayout.ColorField("Background Color", template._colorTemplateBackgroundImage);
-
-        template._colorButtonCTA = EditorGUILayout.ColorField("Button Text Color", template._colorButtonCTA);
-
-        template._colorButtonText = EditorGUILayout.ColorField("Button Color", template._colorButtonText);
-
-        template._buttonText = EditorGUILayout.TextField("CTA Text", template._buttonText);
-
-        //AppSpecific
-
-        template._appHeadlineString = EditorGUILayout.TextField("Headline Text", template._appHeadlineString);
-       
-        template._colorAppHeadline = EditorGUILayout.ColorField("Headline Color", template._colorAppHeadline);
-        
-        template._appInfoString = EditorGUILayout.TextField("App Info Text", template._appInfoString, GUILayout.Height(60));
-        
-        template._colorAppInfo = EditorGUILayout.ColorField("Headline Color", template._colorAppInfo);
-        
-        template._ratingFillAmount = EditorGUILayout.Slider("Rating", template._ratingFillAmount, 0f, 5f);
-
-        template._priceValue = EditorGUILayout.Slider("Price Amount", template._priceValue, 0, 1000);
-
+        template._colorButtonCTA = EditorGUILayout.ColorField("Button Color", template._colorButtonCTA);
+        template._colorButtonText = EditorGUILayout.ColorField("CTA Text Color", template._colorButtonText);
+        template._colorAdHeadline = EditorGUILayout.ColorField("Headline Color", template._colorAdHeadline);
+        template._colorTextBody = EditorGUILayout.ColorField("Text Body Color", template._colorTextBody);
         template._ratingStarsColor = EditorGUILayout.ColorField("Stars Color", template._ratingStarsColor);
 
+        EditorGUILayout.Space();
 
-        template.Initialize();
+        // Section 2: VALUES & TEXTS
+        EditorGUILayout.LabelField("VALUES & TEXTS", EditorStyles.boldLabel);
+        DrawUILine();
 
-        /*
-                template._colorButtonCTA = EditorGUILayout.ColorField("Button Color", template._colorButtonCTA);
-                template._buttonCTA.image.color = template._colorButtonCTA;
+        template._buttonText = EditorGUILayout.TextField("CTA Text", template._buttonText);
+        template._appHeadlineString = EditorGUILayout.TextField("Headline Text", template._appHeadlineString);
+        template._appInfoString = EditorGUILayout.TextField("App Info Text", template._appInfoString, GUILayout.Height(60));
+        template._ratingFillAmount = EditorGUILayout.Slider("Rating", template._ratingFillAmount, 0f, 5f);
+        template._priceValue = EditorGUILayout.Slider("Price Amount", template._priceValue, 0, 1000);
+        
+        EditorGUILayout.Space();
 
-                template._colorButtonCTA = EditorGUILayout.ColorField("Button Color", template._colorButtonCTA);
-                template._buttonCTA.image.color = template._colorButtonCTA;*/
+        // Section 3: TRANSFORM
+        EditorGUILayout.LabelField("TRANSFORM ADJUSTMENTS", EditorStyles.boldLabel);
+        DrawUILine();
+        template._templatePosition.x = EditorGUILayout.Slider("Hor", template._templatePosition.x, -1000f, 1000f);
+        template._templatePosition.y = EditorGUILayout.Slider("Ver", template._templatePosition.y, -1000f, 1000f);
+       
+        template._templateWidth = EditorGUILayout.Slider("Width", template._templateWidth, 800f, 1600f);
+        template._templateHeight = EditorGUILayout.Slider("Height", template._templateHeight, 410f, 1800f);
+        template._rotationZaxis = EditorGUILayout.Slider("Rotation", template._rotationZaxis, -180f, 180f);
 
-        if (GUILayout.Button("Save Data To JSON"))
+        template.InitializeTemplate();
+
+        GUILayout.Space(7);
+        GUI.backgroundColor = Color.cyan;
+        if (GUILayout.Button("SAVE DATA TO JSON"))
         {
-           // Debug.Log("generatecoldor");
             template.SaveData();
-        }
-
-        if (GUILayout.Button("Load Data From JSON"))
-        {
-            //Debug.Log("generatecoldor");
-            template.LoadData();
         }
         Repaint2();
     }
+    void DrawUILine()
+    {
+        Rect rect = EditorGUILayout.GetControlRect(false, 1);
+        EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
+        GUILayout.Space(4);
+    }
 
-   
 }
